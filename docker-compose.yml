@@ -1,0 +1,30 @@
+version: "3.7"
+
+services:
+  app:
+    image: golang:alpine
+    env_file:
+      - env
+    volumes:
+      - .:/go/src/employee
+    working_dir: /go/src/employee
+    ports:
+      - "8080:8080"
+    command: go run main.go
+
+  db:
+    image: postgres:alpine
+    restart: on-failure
+    healthcheck:
+      test: pg_isready -U pgadmin -d employeesPg
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    ports:
+      - "5432:5432"
+    volumes:
+      - /Users/aleksandr/go/src/github.com/AlexandrSminrov/employees/migrations/000001_init.up.sql:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_USER: pgadmin
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: employees
