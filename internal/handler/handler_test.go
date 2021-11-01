@@ -247,9 +247,7 @@ func TestHandler_GetByIDEmployee(t *testing.T) {
 			assert.Equal(t, test.expectedStatusCode, w.Code)
 			assert.Equal(t, test.expectedResponseBody, w.Body.String())
 		})
-
 	}
-
 }
 
 func TestHandler_UpdateEmployee(t *testing.T) {
@@ -339,7 +337,5 @@ func TestHandler_UpdateEmployee(t *testing.T) {
 			assert.Equal(t, test.expectedStatusCode, w.Code)
 			assert.Equal(t, test.expectedResponseBody, w.Body.String())
 		})
-
 	}
-
 }

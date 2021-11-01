@@ -5,13 +5,13 @@ import (
 	"crudEmployee/internal/repository"
 	mockRepository "crudEmployee/internal/repository/mocks"
 	"fmt"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestService_AddEmployee(t *testing.T) {
-
 	srv := NewService(mockRepository.NewMockRepository(gomock.NewController(t)))
 
 	_, err := srv.AddEmployee(context.Background(), []*repository.Employee{
@@ -20,7 +20,6 @@ func TestService_AddEmployee(t *testing.T) {
 		},
 	})
 	assert.Equal(t, fmt.Errorf("lastName ERROR entry number 1 "), err)
-	//assert.Equal(t, test.expectedResponseBody, w.Body.String())
 }
 
 func TestService_Update(t *testing.T) {
@@ -127,5 +126,4 @@ func TestService_validate(t *testing.T) {
 			assert.Equal(t, test.Out, err)
 		})
 	}
-
 }
