@@ -22,7 +22,7 @@ func (s *service) GetAll(ctx context.Context) ([]byte, error) {
 func (s *service) AddEmployee(ctx context.Context, employees []*repository.Employee) (string, error) {
 	for i, employee := range employees {
 		if err := validate(employee); err != nil {
-			return "", fmt.Errorf("%v entry number %d ", err, i)
+			return "", fmt.Errorf("%v entry number %d ", err, i+1)
 		}
 	}
 
@@ -76,7 +76,7 @@ func validate(employee *repository.Employee) error {
 	if onlyNum.MatchString(employee.Phone) {
 		return fmt.Errorf("phone number ERROR ")
 	}
-	if !email.MatchString(employee.Email) && len(employee.Email) > 1 {
+	if email.MatchString(employee.Email) && len(employee.Email) > 1 {
 		return fmt.Errorf("email ERROR ")
 	}
 

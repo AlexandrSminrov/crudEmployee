@@ -12,7 +12,7 @@ var (
 	onlyRuEng = regexp.MustCompile(`[^A-Za-zА-Яа-я]`)
 	onlyNum   = regexp.MustCompile(`[^0-9]`)
 	address   = regexp.MustCompile(`[^a-zA-zа-яА-Я0-9,.\s№]`)
-	email     = regexp.MustCompile(`[^а-яА-Я0-9,.\s№]`)
+	email     = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 )
 
 // Service interface

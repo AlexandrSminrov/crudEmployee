@@ -13,7 +13,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	jsoniter "github.com/json-iterator/go"
+	joiner "github.com/json-iterator/go"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -127,6 +127,16 @@ func TestHandler_AddEmployees2(t *testing.T) {
 			expectedStatusCode:   http.StatusBadRequest,
 			expectedResponseBody: `error json`,
 		},
+		{
+			Name:                 "db error",
+			InputBody:            `[{"first_name":"Иван","last_name":"Иванов","middle_name":"Иванович","date_of_birth":"1980-10-11","address":"Москва","department":"тест","about_me":"тест","phone":"77777777","email":"test@test.ru"}]`,
+			mock:                 true,
+			expectedStatusCode:   http.StatusInternalServerError,
+			expectedResponseBody: `db error`,
+			mockBeaver: func(m *mockRepository.MockRepository, employees []*repository.Employee) {
+				m.EXPECT().AddEmployee(context.Background(), employees).Return(int64(0), fmt.Errorf("db error"))
+			},
+		},
 	}
 
 	for _, test := range tests {
@@ -138,7 +148,7 @@ func TestHandler_AddEmployees2(t *testing.T) {
 			handle := NewHandler(service.NewService(repo))
 			if test.mock {
 				var employees []*repository.Employee
-				assert.Equal(t, nil, jsoniter.Unmarshal([]byte(test.InputBody), &employees))
+				assert.Equal(t, nil, joiner.Unmarshal([]byte(test.InputBody), &employees))
 				test.mockBeaver(repo, employees)
 			}
 
@@ -289,6 +299,17 @@ func TestHandler_UpdateEmployee(t *testing.T) {
 			expectedStatusCode:   http.StatusNotFound,
 			expectedResponseBody: `employee not fond`,
 		},
+		{
+			Name:      "not found",
+			ID:        "1",
+			InputBody: `{"first_name":"Иван"}`,
+			mock:      true,
+			mockBeaver: func(m *mockRepository.MockRepository, id int64, employee *repository.Employee) {
+				m.EXPECT().Update(context.Background(), id, employee).Return(int64(0), fmt.Errorf("db error"))
+			},
+			expectedStatusCode:   http.StatusInternalServerError,
+			expectedResponseBody: `db error`,
+		},
 	}
 
 	for _, test := range tests {
@@ -303,7 +324,7 @@ func TestHandler_UpdateEmployee(t *testing.T) {
 				assert.Equal(t, nil, err)
 
 				var employee *repository.Employee
-				assert.Equal(t, nil, jsoniter.Unmarshal([]byte(test.InputBody), &employee))
+				assert.Equal(t, nil, joiner.Unmarshal([]byte(test.InputBody), &employee))
 				test.mockBeaver(repo, id, employee)
 			}
 
